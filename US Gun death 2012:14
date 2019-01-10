@@ -1,0 +1,1037 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Gun deaths US between 2012-2014"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 288,
+   "metadata": {
+    "collapsed": false,
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[['', 'year', 'month', 'intent', 'police', 'sex', 'age', 'race', 'hispanic', 'place', 'education'], ['1', '2012', '01', 'Suicide', '0', 'M', '34', 'Asian/Pacific Islander', '100', 'Home', '4'], ['2', '2012', '01', 'Suicide', '0', 'F', '21', 'White', '100', 'Street', '3'], ['3', '2012', '01', 'Suicide', '0', 'M', '60', 'White', '100', 'Other specified', '4'], ['4', '2012', '02', 'Suicide', '0', 'M', '64', 'White', '100', 'Home', '4']]\n"
+     ]
+    }
+   ],
+   "source": [
+    "import csv\n",
+    "import datetime\n",
+    "\n",
+    "f = open('guns.csv','r')\n",
+    "csvreader = csv.reader(f)\n",
+    "data = list(csvreader)\n",
+    "print(data[:5])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 289,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[['', 'year', 'month', 'intent', 'police', 'sex', 'age', 'race', 'hispanic', 'place', 'education']]\n",
+      "[['1', '2012', '01', 'Suicide', '0', 'M', '34', 'Asian/Pacific Islander', '100', 'Home', '4'], ['2', '2012', '01', 'Suicide', '0', 'F', '21', 'White', '100', 'Street', '3'], ['3', '2012', '01', 'Suicide', '0', 'M', '60', 'White', '100', 'Other specified', '4'], ['4', '2012', '02', 'Suicide', '0', 'M', '64', 'White', '100', 'Home', '4'], ['5', '2012', '02', 'Suicide', '0', 'M', '31', 'White', '100', 'Other specified', '2']]\n"
+     ]
+    }
+   ],
+   "source": [
+    "headers = data[:1]\n",
+    "data = data[1:]\n",
+    "print(headers)\n",
+    "print(data[:5])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Number of gun deaths per period of time"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 290,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "{'2012': 33563, '2013': 33636, '2014': 33599}\n"
+     ]
+    }
+   ],
+   "source": [
+    "years = [row[1] for row in data]\n",
+    "\n",
+    "year_counts = {}\n",
+    "for y in years:\n",
+    "    if y not in year_counts:\n",
+    "        year_counts[y] =  1\n",
+    "    else:\n",
+    "        year_counts[y] += 1\n",
+    "print(year_counts)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 291,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "dates = [datetime.datetime(year = int(row[1]),month = int(row[2]), day = 1) \n",
+    "         for row in data]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 292,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[datetime.datetime(2012, 1, 1, 0, 0), datetime.datetime(2012, 1, 1, 0, 0), datetime.datetime(2012, 2, 1, 0, 0), datetime.datetime(2012, 2, 1, 0, 0)]\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(dates[1:5])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 293,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{datetime.datetime(2012, 1, 1, 0, 0): 2757,\n",
+       " datetime.datetime(2012, 2, 1, 0, 0): 2356,\n",
+       " datetime.datetime(2012, 3, 1, 0, 0): 2742,\n",
+       " datetime.datetime(2012, 4, 1, 0, 0): 2794,\n",
+       " datetime.datetime(2012, 5, 1, 0, 0): 2998,\n",
+       " datetime.datetime(2012, 6, 1, 0, 0): 2825,\n",
+       " datetime.datetime(2012, 7, 1, 0, 0): 3025,\n",
+       " datetime.datetime(2012, 8, 1, 0, 0): 2953,\n",
+       " datetime.datetime(2012, 9, 1, 0, 0): 2851,\n",
+       " datetime.datetime(2012, 10, 1, 0, 0): 2732,\n",
+       " datetime.datetime(2012, 11, 1, 0, 0): 2728,\n",
+       " datetime.datetime(2012, 12, 1, 0, 0): 2790,\n",
+       " datetime.datetime(2013, 1, 1, 0, 0): 2863,\n",
+       " datetime.datetime(2013, 2, 1, 0, 0): 2374,\n",
+       " datetime.datetime(2013, 3, 1, 0, 0): 2861,\n",
+       " datetime.datetime(2013, 4, 1, 0, 0): 2797,\n",
+       " datetime.datetime(2013, 5, 1, 0, 0): 2805,\n",
+       " datetime.datetime(2013, 6, 1, 0, 0): 2919,\n",
+       " datetime.datetime(2013, 7, 1, 0, 0): 3078,\n",
+       " datetime.datetime(2013, 8, 1, 0, 0): 2858,\n",
+       " datetime.datetime(2013, 9, 1, 0, 0): 2741,\n",
+       " datetime.datetime(2013, 10, 1, 0, 0): 2807,\n",
+       " datetime.datetime(2013, 11, 1, 0, 0): 2757,\n",
+       " datetime.datetime(2013, 12, 1, 0, 0): 2764,\n",
+       " datetime.datetime(2014, 1, 1, 0, 0): 2650,\n",
+       " datetime.datetime(2014, 2, 1, 0, 0): 2360,\n",
+       " datetime.datetime(2014, 3, 1, 0, 0): 2683,\n",
+       " datetime.datetime(2014, 4, 1, 0, 0): 2861,\n",
+       " datetime.datetime(2014, 5, 1, 0, 0): 2863,\n",
+       " datetime.datetime(2014, 6, 1, 0, 0): 2930,\n",
+       " datetime.datetime(2014, 7, 1, 0, 0): 2883,\n",
+       " datetime.datetime(2014, 8, 1, 0, 0): 2969,\n",
+       " datetime.datetime(2014, 9, 1, 0, 0): 2913,\n",
+       " datetime.datetime(2014, 10, 1, 0, 0): 2864,\n",
+       " datetime.datetime(2014, 11, 1, 0, 0): 2755,\n",
+       " datetime.datetime(2014, 12, 1, 0, 0): 2856}"
+      ]
+     },
+     "execution_count": 293,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "date_counts = {}\n",
+    "for d in dates:\n",
+    "    if d not in date_counts:\n",
+    "        date_counts[d] =0\n",
+    "    else:\n",
+    "        date_counts[d] += 1\n",
+    "        \n",
+    "date_counts"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Gender/Race related gun death"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 294,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "{'M': 86349, 'F': 14449}\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "{'Asian/Pacific Islander': 1326,\n",
+       " 'Black': 23296,\n",
+       " 'Hispanic': 9022,\n",
+       " 'Native American/Native Alaskan': 917,\n",
+       " 'White': 66237}"
+      ]
+     },
+     "execution_count": 294,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "sex = [s[5] for s in data]\n",
+    "sex_counts ={}\n",
+    "\n",
+    "for gender in sex:\n",
+    "    if gender not in sex_counts:\n",
+    "        sex_counts[gender] = 1\n",
+    "    else:\n",
+    "        sex_counts[gender] +=1\n",
+    "\n",
+    "race = [r[7] for r in data]\n",
+    "race_counts = {}\n",
+    "\n",
+    "for r in race:\n",
+    "    if r not in race_counts:\n",
+    "        race_counts[r] = 1\n",
+    "    else:\n",
+    "        race_counts[r] +=1\n",
+    "        \n",
+    "\n",
+    "print(sex_counts)\n",
+    "race_counts"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Results show that 1 out of 6 victims by gun is a woman. In order to obtain death per race, the total population data is needed; it will be treated just below."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 295,
+   "metadata": {
+    "collapsed": false,
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[['Id',\n",
+       "  'Year',\n",
+       "  'Id',\n",
+       "  'Sex',\n",
+       "  'Id',\n",
+       "  'Hispanic Origin',\n",
+       "  'Id',\n",
+       "  'Id2',\n",
+       "  'Geography',\n",
+       "  'Total',\n",
+       "  'Race Alone - White',\n",
+       "  'Race Alone - Hispanic',\n",
+       "  'Race Alone - Black or African American',\n",
+       "  'Race Alone - American Indian and Alaska Native',\n",
+       "  'Race Alone - Asian',\n",
+       "  'Race Alone - Native Hawaiian and Other Pacific Islander',\n",
+       "  'Two or More Races'],\n",
+       " ['cen42010',\n",
+       "  'April 1, 2010 Census',\n",
+       "  'totsex',\n",
+       "  'Both Sexes',\n",
+       "  'tothisp',\n",
+       "  'Total',\n",
+       "  '0100000US',\n",
+       "  '',\n",
+       "  'United States',\n",
+       "  '308745538',\n",
+       "  '197318956',\n",
+       "  '44618105',\n",
+       "  '40250635',\n",
+       "  '3739506',\n",
+       "  '15159516',\n",
+       "  '674625',\n",
+       "  '6984195']]"
+      ]
+     },
+     "execution_count": 295,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "f = open('census.csv','r')\n",
+    "csvreader = csv.reader(f)\n",
+    "census = list(csvreader)\n",
+    "census"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 296,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "mapping = {\n",
+    "    \"Asian/Pacific Islander\": 15159516 + 674625,\n",
+    "    \"Native American/Native Alaskan\": 3739506,\n",
+    "    \"Black\": 40250635,\n",
+    "    \"Hispanic\": 44618105,\n",
+    "    'White' : 197318956\n",
+    "    \n",
+    "}"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 297,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'Asian/Pacific Islander': 8.374309664161762,\n",
+       " 'Black': 57.8773477735196,\n",
+       " 'Hispanic': 20.220491210910907,\n",
+       " 'Native American/Native Alaskan': 24.521955573811088,\n",
+       " 'White': 33.56849303419181}"
+      ]
+     },
+     "execution_count": 297,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "race_per_hundredk = {}\n",
+    "\n",
+    "for a,b in race_counts.items():\n",
+    "    race_per_hundredk[a] = (b / mapping[a] * 100000)\n",
+    "    \n",
+    "race_per_hundredk\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### The death rate show that Black are most likely to suffer from gun violence while the Asian/Pacific Inslander are the least likely to be killed by a gun"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Death by homicide\n",
+    "\n",
+    "### Homicide rate per race"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 298,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "intents = [intent[3] for intent in data]\n",
+    "races = [race[7] for race in data]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 317,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'Asian/Pacific Islander': 559,\n",
+       " 'Black': 19510,\n",
+       " 'Hispanic': 5634,\n",
+       " 'Native American/Native Alaskan': 326,\n",
+       " 'White': 9147}"
+      ]
+     },
+     "execution_count": 317,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "homicide_race_counts ={}\n",
+    "\n",
+    "for e, race in enumerate(races):\n",
+    "    if race not in homicide_race_counts:\n",
+    "        homicide_race_counts[race] = 0\n",
+    "    if intents[e] == 'Homicide':\n",
+    "        homicide_race_counts[race] +=1\n",
+    "        \n",
+    "        \n",
+    "homicide_race_counts"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 318,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'Asian/Pacific Islander': 3.530346230970155,\n",
+       " 'Black': 48.471284987180944,\n",
+       " 'Hispanic': 12.627161104219914,\n",
+       " 'Native American/Native Alaskan': 8.717729026240365,\n",
+       " 'White': 4.6356417981453335}"
+      ]
+     },
+     "execution_count": 318,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "race_per_hundredk = {}\n",
+    "\n",
+    "for a,b in homicide_race_counts.items():\n",
+    "    race_per_hundredk[a] = (b / mapping[a] * 100000)\n",
+    "    \n",
+    "race_per_hundredk"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Relation between month and homicide rate :"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 322,
+   "metadata": {
+    "collapsed": false,
+    "scrolled": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'01': 2.7415705132250823,\n",
+       " '02': 2.3505330170803225,\n",
+       " '03': 2.746872716562638,\n",
+       " '04': 2.801883076189782,\n",
+       " '05': 2.8728000458295946,\n",
+       " '06': 2.8754511474983726,\n",
+       " '07': 2.978844112580716,\n",
+       " '08': 2.9105782446096815,\n",
+       " '09': 2.819446624745437,\n",
+       " '10': 2.7856450784685167,\n",
+       " '11': 2.7316288819671644,\n",
+       " '12': 2.7879647924286974}"
+      ]
+     },
+     "execution_count": 322,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "month = [m[2] for m in data]\n",
+    "homicide_x_month ={}\n",
+    "total_population = sum(mapping.values())\n",
+    "\n",
+    "for m in month:\n",
+    "    if m not in homicide_x_month:\n",
+    "        homicide_x_month[m] = 1\n",
+    "    else:\n",
+    "        homicide_x_month[m] +=1\n",
+    "\n",
+    "homicide_rate_x_month = {}\n",
+    "for i,j in homicide_x_month.items():\n",
+    "    homicide_rate_x_month[i] = (homicide_x_month[i]/total_population*100000)\n",
+    "homicide_rate_x_month"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 323,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "#homicide_rate_x_month = [t/total_population*100000 for t in homicide_x_month.values()]\n",
+    "#print(homicide_rate_x_month)\n",
+    "    "
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Homicide rate by gender"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 324,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'F': 4.788221001521722, 'M': 28.61499724966428}"
+      ]
+     },
+     "execution_count": 324,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "homicide_rate_x_gender = {}\n",
+    "for g in homicide_x_gender:    \n",
+    "    homicide_rate_x_gender[g] =  homicide_x_gender[g]/total_population * 100000\n",
+    "    \n",
+    "homicide_rate_x_gender"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "collapsed": false
+   },
+   "source": [
+    "### The following results are observed \n",
+    "### 1. Homicide rate per race kill at least 4 times more Black than any other race.\n",
+    "### 2. Homicide rate seem to peak during summer.\n",
+    "### 3. Homicide rate by gender show that men are around 6 more likely to be killed than women.\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Deaths by Accident."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 325,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'Asian/Pacific Islander': 12,\n",
+       " 'Black': 328,\n",
+       " 'Hispanic': 145,\n",
+       " 'Native American/Native Alaskan': 22,\n",
+       " 'White': 1132}"
+      ]
+     },
+     "execution_count": 325,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "Accidental_race_counts ={}\n",
+    "\n",
+    "for e, race in enumerate(races):\n",
+    "    if race not in Accidental_race_counts:\n",
+    "        Accidental_race_counts[race] = 0\n",
+    "    if intents[e] == 'Accidental':\n",
+    "        Accidental_race_counts[race] +=1        \n",
+    "        \n",
+    "Accidental_race_counts"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 326,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'Asian/Pacific Islander': 0.07578560782046845,\n",
+       " 'Black': 0.814893976206835,\n",
+       " 'Hispanic': 0.3249801846133985,\n",
+       " 'Native American/Native Alaskan': 0.5883130017708221,\n",
+       " 'White': 0.5736904466492313}"
+      ]
+     },
+     "execution_count": 326,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "race_per_hundredk_accidental = {}\n",
+    "\n",
+    "for a,b in Accidental_race_counts.items():\n",
+    "    race_per_hundredk_accidental[a] = (b/mapping[a]*100000)\n",
+    "    \n",
+    "race_per_hundredk_accidental"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 327,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "Accidental_death_x_gender = {}\n",
+    "for g in sex:\n",
+    "    if g not in Accidental_death_x_gender:\n",
+    "        Accidental_death_x_gender[g] = 1\n",
+    "    else:\n",
+    "        Accidental_death_x_gender[g] +=1"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 328,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'F': 0.47882210015217225, 'M': 2.861499724966428}"
+      ]
+     },
+     "execution_count": 328,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "Accidental_death_rate_x_gender = {}\n",
+    "\n",
+    "for g in Accidental_death_x_gender:\n",
+    "    Accidental_death_rate_x_gender[g] = Accidental_death_x_gender[g]/total_population*10000\n",
+    "    \n",
+    "Accidental_death_rate_x_gender"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### There is less than 1 accidental death per 100000 for any given race and females are 1/5 less prone to die on an accident than a male"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Death by Location"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 329,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "places = [row[9] for row in data]\n",
+    "\n",
+    "places_counts = {}\n",
+    "for p in places:\n",
+    "    if p not in places_counts:\n",
+    "        places_counts[p] = 1\n",
+    "    else:\n",
+    "        places_counts[p] += 1\n",
+    "        \n",
+    "places_counts\n",
+    "\n",
+    "total_places = sum(places_counts.values())\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 330,
+   "metadata": {
+    "collapsed": false,
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'Farm': 470,\n",
+       " 'Home': 60486,\n",
+       " 'Industrial/construction': 248,\n",
+       " 'NA': 1384,\n",
+       " 'Other specified': 13751,\n",
+       " 'Other unspecified': 8867,\n",
+       " 'Residential institution': 203,\n",
+       " 'School/instiution': 671,\n",
+       " 'Sports': 128,\n",
+       " 'Street': 11151,\n",
+       " 'Trade/service area': 3439}"
+      ]
+     },
+     "execution_count": 330,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "places_counts"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 331,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "place_M={}\n",
+    "place_F={}\n",
+    "\n",
+    "for e,place in enumerate(places):\n",
+    "    if place not in place_M:\n",
+    "        place_M[place] = 1\n",
+    "    if place not in place_F:\n",
+    "        place_F[place] = 1\n",
+    "    if sex[e] == 'M':\n",
+    "        place_M[place] += 1\n",
+    "    if sex[e] == 'F':\n",
+    "        place_F[place] +=1\n",
+    "    \n",
+    "\n",
+    "total_places_F = sum(place_F.values())\n",
+    "total_places_M = sum(place_M.values())\n",
+    "    \n",
+    "Death_x_F_place = {}     \n",
+    "for p in place_F:\n",
+    "    Death_x_F_place[p] = place_F[p]/total_places_F*100\n",
+    "\n",
+    "Death_x_M_place = {}     \n",
+    "for p in place_M:\n",
+    "    Death_x_M_place[p] = place_M[p]/total_places_M*100\n",
+    "    "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 332,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'Farm': 0.35269709543568467,\n",
+       " 'Home': 71.05809128630706,\n",
+       " 'Industrial/construction': 0.14522821576763487,\n",
+       " 'NA': 0.4426002766251729,\n",
+       " 'Other specified': 9.979253112033195,\n",
+       " 'Other unspecified': 8.319502074688796,\n",
+       " 'Residential institution': 0.2835408022130014,\n",
+       " 'School/instiution': 0.7676348547717842,\n",
+       " 'Sports': 0.08990318118948824,\n",
+       " 'Street': 5.816044260027662,\n",
+       " 'Trade/service area': 2.7455048409405256}"
+      ]
+     },
+     "execution_count": 332,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "Death_x_F_place"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 333,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "100.0"
+      ]
+     },
+     "execution_count": 333,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "total_p_F = sum(Death_x_F_place.values())\n",
+    "total_p_F"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 334,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'Farm': 0.4874942102825382,\n",
+       " 'Home': 58.143816581750805,\n",
+       " 'Industrial/construction': 0.2651690597498842,\n",
+       " 'NA': 1.5308012968967115,\n",
+       " 'Other specified': 14.254284390921724,\n",
+       " 'Other unspecified': 8.876794812413154,\n",
+       " 'Residential institution': 0.18990273274664196,\n",
+       " 'School/instiution': 0.650764242704956,\n",
+       " 'Sports': 0.13547938860583603,\n",
+       " 'Street': 11.940713293191292,\n",
+       " 'Trade/service area': 3.524779990736452}"
+      ]
+     },
+     "execution_count": 334,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "Death_x_M_place"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 335,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "99.99999999999999"
+      ]
+     },
+     "execution_count": 335,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "total_p_M = sum(Death_x_M_place.values())\n",
+    "total_p_M"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Home is where most of the deaths take place. 71% of the females die at home while 58 of males do. The location  for both males and females is sports."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Death by Education level"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 336,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'1': 21823, '2': 42927, '3': 21680, '4': 12946, '5': 1369, 'NA': 53}"
+      ]
+     },
+     "execution_count": 336,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "education = [row[10] for row in data]\n",
+    "\n",
+    "ed_counts = {}\n",
+    "for e in education:\n",
+    "    if e not in ed_counts:\n",
+    "        ed_counts[e] = 1\n",
+    "    else:\n",
+    "        ed_counts[e] += 1\n",
+    "        \n",
+    "ed_counts\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "collapsed": true
+   },
+   "source": [
+    "### 1. Less than high school\n",
+    "### 2. Graduated from High School or equivalent\n",
+    "### 3. Some College\n",
+    "### 4. At least graduated from College\n",
+    "### 5. Not available\n",
+    "\n",
+    "### Graduates from High School or equivalent are the most likely to die because of gun violence while graduates from College or the least.\n",
+    "\n",
+    "## Final conclusions:\n",
+    "## Between males and females, males are most likely to die from gun violence. Among all races,  Black have the highest probability die from a shot. The most dangerous place for both males and females is home and finally, having a College degree or higher decreases the risk of dying from a shot."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.4.3"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 0
+}
